@@ -1,0 +1,70 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+package-lock.json
+client/package-lock.json
+server/package-lock.json
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+server/.env
+server/.env.local
+
+# Build outputs
+client/dist/
+client/build/
+server/dist/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+Thumbs.db
+.DS_Store
+*.log
+
+# Uploads and user-generated content
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Documentation files (keep only README.md)
+API_DOCUMENTATION.md
+ENV_SETUP.md
+GOOGLE_OAUTH_SETUP.md
+HOW_TO_LOGIN.md
+PROJECT_SUMMARY.md
+QUICK_START.md
+SETUP_GUIDE.md
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# MongoDB data (if running locally)
+data/
+*.db
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Misc
+*.pem
+*.key
