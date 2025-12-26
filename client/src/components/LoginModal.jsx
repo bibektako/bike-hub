@@ -3,8 +3,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import Modal from './Modal';
-import { FaEnvelope, FaLock, FaGoogle, FaEye, FaEyeSlash, FaSignInAlt } from 'react-icons/fa';
+import { FaEnvelope, FaLock, FaGoogle, FaEye, FaEyeSlash, FaSignInAlt, FaMotorcycle } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 import LoadingSpinner from './LoadingSpinner';
+import ForgotPasswordModal from './ForgotPasswordModal';
 
 const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
   const [formData, setFormData] = useState({
@@ -13,6 +15,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -48,6 +51,24 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Sign In">
       <div className="space-y-6">
+        {/* Logo */}
+        <div className="flex justify-center mb-4">
+          <motion.div
+            className="flex items-center space-x-2"
+            whileHover={{ scale: 1.05 }}
+          >
+            <motion.div
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            >
+              <FaMotorcycle className="text-primary-600 text-4xl" />
+            </motion.div>
+            <span className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">
+              BikeHub
+            </span>
+          </motion.div>
+        </div>
+        
         <div className="text-center">
           <p className="text-gray-600">Welcome back! Please sign in to your account</p>
         </div>
@@ -90,6 +111,18 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+            <div className="text-right mt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  setShowForgotPassword(true);
+                }}
+                className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Forgot password?
               </button>
             </div>
           </div>
@@ -143,6 +176,14 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister }) => {
           </button>
         </div>
       </div>
+      <ForgotPasswordModal
+        isOpen={showForgotPassword}
+        onClose={() => setShowForgotPassword(false)}
+        onSwitchToLogin={() => {
+          setShowForgotPassword(false);
+          onClose();
+        }}
+      />
     </Modal>
   );
 };

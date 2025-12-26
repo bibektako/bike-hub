@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import OAuthCallback from './pages/OAuthCallback';
+import ResetPassword from './pages/ResetPassword';
 import BikeList from './pages/BikeList';
 import BikeDetail from './pages/BikeDetail';
 import BikeComparison from './pages/BikeComparison';
@@ -43,6 +44,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/auth/callback" element={<OAuthCallback />} />
               <Route path="/bikes" element={<BikeList />} />
               <Route path="/bikes/:id" element={<BikeDetail />} />

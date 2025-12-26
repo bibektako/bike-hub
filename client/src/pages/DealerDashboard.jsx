@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { AuthContext } from '../context/AuthContext';
+import ChangePasswordModal from '../components/ChangePasswordModal';
 import {
   FaStore,
   FaCalendarAlt,
@@ -26,10 +28,13 @@ import {
   FaSearch,
   FaFilter,
   FaChevronLeft,
-  FaChevronRight
+  FaChevronRight,
+  FaLock,
+  FaExclamationTriangle
 } from 'react-icons/fa';
 
 const DealerDashboard = () => {
+  const { user } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('listings'); // 'listings', 'bikes', 'bookings'
   const [bikes, setBikes] = useState([]);
   const [listings, setListings] = useState([]);
@@ -41,6 +46,7 @@ const DealerDashboard = () => {
   const [responseMessage, setResponseMessage] = useState('');
   const [showListingForm, setShowListingForm] = useState(false);
   const [selectedBike, setSelectedBike] = useState(null);
+  const [showChangePassword, setShowChangePassword] = useState(false);
   const [listingFormData, setListingFormData] = useState({
     availableForTestRide: true,
     availableForPurchase: true,
@@ -250,11 +256,44 @@ const DealerDashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Password Change Reminder */}
+      {user?.mustChangePassword && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mb-6 flex items-center justify-between"
+        >
+          <div className="flex items-center space-x-3">
+            <FaExclamationTriangle className="text-yellow-600 text-2xl" />
+            <div>
+              <h3 className="font-bold text-yellow-800">Action Required: Change Your Password</h3>
+              <p className="text-sm text-yellow-700">
+                You are using a temporary password. Please change it to secure your account.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowChangePassword(true)}
+            className="flex items-center space-x-2 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-semibold"
+          >
+            <FaLock />
+            <span>Change Password</span>
+          </button>
+        </motion.div>
+      )}
+
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
           <FaStore className="text-4xl text-primary-600" />
           <h1 className="text-3xl font-bold">Dealer Dashboard</h1>
         </div>
+        <button
+          onClick={() => setShowChangePassword(true)}
+          className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+        >
+          <FaLock />
+          <span>Change Password</span>
+        </button>
       </div>
 
       {/* Tabs */}
@@ -896,6 +935,11 @@ const DealerDashboard = () => {
           </motion.div>
         </div>
       )}
+
+      <ChangePasswordModal
+        isOpen={showChangePassword}
+        onClose={() => setShowChangePassword(false)}
+      />
     </div>
   );
 };

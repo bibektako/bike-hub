@@ -19,16 +19,21 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999]"
             style={{ 
               position: 'fixed',
               top: 0,
               left: 0,
               right: 0,
               bottom: 0,
+              width: '100vw',
+              height: '100vh',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              padding: '1rem',
+              overflow: 'auto',
+              boxSizing: 'border-box'
             }}
           >
             {/* Modal Content */}
@@ -37,11 +42,13 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className={`bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} max-h-[90vh] overflow-y-auto relative`}
+              className={`bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} max-h-[90vh] overflow-y-auto relative z-[10000]`}
               style={{ 
                 display: 'flex',
                 flexDirection: 'column',
-                margin: '0 auto'
+                margin: 'auto',
+                position: 'relative',
+                boxSizing: 'border-box'
               }}
             >
               {/* Header */}

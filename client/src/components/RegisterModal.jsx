@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import Modal from './Modal';
-import { FaUser, FaEnvelope, FaPhone, FaLock, FaGoogle, FaEye, FaEyeSlash, FaUserPlus } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaPhone, FaLock, FaGoogle, FaEye, FaEyeSlash, FaUserPlus, FaMotorcycle } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 import LoadingSpinner from './LoadingSpinner';
 
 const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
@@ -50,6 +51,24 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Create Account">
       <div className="space-y-6">
+        {/* Logo */}
+        <div className="flex justify-center mb-4">
+          <motion.div
+            className="flex items-center space-x-2"
+            whileHover={{ scale: 1.05 }}
+          >
+            <motion.div
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            >
+              <FaMotorcycle className="text-primary-600 text-4xl" />
+            </motion.div>
+            <span className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">
+              BikeHub
+            </span>
+          </motion.div>
+        </div>
+        
         <div className="text-center">
           <p className="text-gray-600">Join BikeHub and explore your dream ride</p>
         </div>

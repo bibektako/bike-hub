@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
@@ -12,11 +12,14 @@ import {
   FaPhone,
   FaUserCircle,
   FaCog,
-  FaInfoCircle
+  FaInfoCircle,
+  FaLock
 } from 'react-icons/fa';
+import ChangePasswordModal from '../components/ChangePasswordModal';
 
 const UserDashboard = () => {
   const { user } = useContext(AuthContext);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -91,9 +94,18 @@ const UserDashboard = () => {
       </div>
 
       <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
-        <div className="flex items-center space-x-2 mb-4">
-          <FaUser className="text-xl text-primary-600" />
-          <h2 className="text-xl font-bold">Account Information</h2>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-2">
+            <FaUser className="text-xl text-primary-600" />
+            <h2 className="text-xl font-bold">Account Information</h2>
+          </div>
+          <button
+            onClick={() => setShowChangePassword(true)}
+            className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            <FaLock />
+            <span>Change Password</span>
+          </button>
         </div>
         <div className="space-y-3">
           <div className="flex items-center space-x-3">
@@ -112,6 +124,11 @@ const UserDashboard = () => {
           )}
         </div>
       </div>
+
+      <ChangePasswordModal
+        isOpen={showChangePassword}
+        onClose={() => setShowChangePassword(false)}
+      />
     </div>
   );
 };

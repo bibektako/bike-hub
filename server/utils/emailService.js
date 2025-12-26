@@ -177,3 +177,74 @@ export const sendPasswordChangeReminder = async (email, name, daysRemaining) => 
   }
 };
 
+export const sendPasswordResetEmail = async (email, name, resetUrl) => {
+  try {
+    const transporter = createTransporter();
+    
+    // If transporter is null, email is not configured
+    if (!transporter) {
+      console.warn('⚠️ Email service not configured. Skipping password reset email.');
+      console.log(`📧 Would send password reset email to ${email} with reset URL: ${resetUrl}`);
+      return false;
+    }
+    
+    const mailOptions = {
+      from: `"BikeHub" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: '🔐 Reset Your BikeHub Password',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+            .button { display: inline-block; background: #dc2626; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+            .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; }
+            .footer { text-align: center; margin-top: 30px; color: #6b7280; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🔐 Password Reset Request</h1>
+            </div>
+            <div class="content">
+              <h2>Hello ${name},</h2>
+              <p>We received a request to reset your password for your BikeHub account.</p>
+              
+              <p style="text-align: center;">
+                <a href="${resetUrl}" class="button">Reset Password</a>
+              </p>
+              
+              <p>Or copy and paste this link into your browser:</p>
+              <p style="word-break: break-all; color: #6b7280; font-size: 12px;">${resetUrl}</p>
+              
+              <div class="warning">
+                <strong>⚠️ Important:</strong> This link will expire in 1 hour. If you didn't request this password reset, please ignore this email.
+              </div>
+              
+              <p>If you have any questions, please contact our support team.</p>
+              
+              <div class="footer">
+                <p>This is an automated email. Please do not reply.</p>
+                <p>&copy; ${new Date().getFullYear()} BikeHub. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+    
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Password reset email sent to ${email}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Error sending password reset email:', error);
+    return false;
+  }
+};
+
