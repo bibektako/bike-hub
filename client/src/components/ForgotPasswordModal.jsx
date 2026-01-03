@@ -123,3 +123,6 @@ const ForgotPasswordModal = ({ isOpen, onClose, onSwitchToLogin }) => {
 
 export default ForgotPasswordModal;
 
+
+
+
