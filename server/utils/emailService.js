@@ -247,4 +247,3 @@ export const sendPasswordResetEmail = async (email, name, resetUrl) => {
     return false;
   }
 };
-
