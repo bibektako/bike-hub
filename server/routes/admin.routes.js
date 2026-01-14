@@ -10,9 +10,24 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import crypto from 'crypto';
+import { body, validationResult } from 'express-validator';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// ALLOWED EXTENSIONS MAPPING
+const ALLOWED_IMAGES = {
+  'image/jpeg': '.jpg',
+  'image/png': '.png',
+  'image/webp': '.webp',
+  'image/gif': '.gif'
+};
+
+const ALLOWED_MODELS = {
+  'model/gltf-binary': '.glb',
+  'model/gltf+json': '.gltf',
+  'application/octet-stream': '.glb' // Sometimes glb comes as octet-stream
+};
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -20,38 +35,54 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, '../uploads/'));
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    // Generate safe filename with correct extension based on mimetype
+    const uniqueSuffix = Date.now() + '-' + crypto.randomBytes(8).toString('hex');
+    let ext = path.extname(file.originalname).toLowerCase();
+
+    // Enforce extension based on mimetype if possible, or validate existing extension
+    if (ALLOWED_IMAGES[file.mimetype]) {
+      ext = ALLOWED_IMAGES[file.mimetype];
+    } else if (ALLOWED_MODELS[file.mimetype]) {
+      if (file.mimetype === 'application/octet-stream') {
+        // For octet-stream, trust extension only if it's .glb or .gltf
+        if (ext !== '.glb' && ext !== '.gltf') ext = '.glb';
+      } else {
+        ext = ALLOWED_MODELS[file.mimetype];
+      }
+    }
+
+    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
   }
 });
 
 // File filter for images and 3D models
 const fileFilter = (req, file, cb) => {
-  // Allow images
-  if (file.fieldname === 'images') {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed for images field'), false);
+  const fileExtension = path.extname(file.originalname).toLowerCase();
+
+  // Validate Images
+  if (file.fieldname === 'images' || file.fieldname === 'image') {
+    if (ALLOWED_IMAGES[file.mimetype]) {
+      // Double check extension matches expected type or is generic safe one
+      if (['.jpg', '.jpeg', '.png', '.webp', '.gif'].includes(fileExtension)) {
+        return cb(null, true);
+      }
     }
+    cb(new Error('Invalid image file format. Allowed: JPG, PNG, WEBP, GIF'), false);
   }
-  // Allow 3D models (GLB/GLTF)
+  // Validate 3D models
   else if (file.fieldname === 'model360') {
-    const allowedTypes = ['model/gltf-binary', 'model/gltf+json', 'application/octet-stream'];
-    const allowedExtensions = ['.glb', '.gltf'];
-    const fileExtension = path.extname(file.originalname).toLowerCase();
-    
-    if (allowedTypes.includes(file.mimetype) || allowedExtensions.includes(fileExtension)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only GLB or GLTF files are allowed for 3D models'), false);
+    if (ALLOWED_MODELS[file.mimetype] ||
+      (file.mimetype === 'application/octet-stream' && ['.glb', '.gltf'].includes(fileExtension))) {
+      return cb(null, true);
     }
+    cb(new Error('Only GLB or GLTF files are allowed for 3D models'), false);
   } else {
-    cb(null, true);
+    // Reject unknown fields
+    cb(new Error('Unexpected field upload'), false);
   }
 };
 
-const upload = multer({ 
+const upload = multer({
   storage,
   fileFilter,
   limits: {
@@ -65,6 +96,41 @@ const router = express.Router();
 router.use(protect);
 router.use(authorize('admin'));
 
+// Validation Chains
+const validateBike = [
+  body('name').trim().notEmpty().escape().withMessage('Name is required'),
+  body('brand').trim().notEmpty().escape().withMessage('Brand is required'),
+  body('category').trim().notEmpty().escape().withMessage('Category is required'),
+  body('price').isNumeric().withMessage('Price must be a number'),
+  body('description').trim().escape(),
+  body('features').optional().isArray().withMessage('Features must be an array'),
+  body('features.*').trim().escape() // Sanitize array items
+];
+
+const validateDealer = [
+  body('name').trim().notEmpty().escape().withMessage('Dealer name is required'),
+  body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
+  body('phone').trim().escape(),
+  body('location').trim().escape(),
+  body('address').trim().escape()
+];
+
+const validatePromotion = [
+  body('title').trim().notEmpty().escape().withMessage('Title is required'),
+  body('description').trim().escape(),
+  body('discountPercentage').optional().isNumeric(),
+  body('validUntil').optional().isISO8601().toDate()
+];
+
+// Helper to check validation results
+const checkValidation = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
+
 // @route   GET /api/admin/stats
 // @desc    Get admin dashboard statistics
 // @access  Private/Admin
@@ -74,26 +140,26 @@ router.get('/stats', async (req, res) => {
     const totalBikes = await Bike.countDocuments();
     const totalBookings = await Booking.countDocuments();
     const totalDealers = await Dealer.countDocuments();
-    
+
     // Most viewed bikes
     const mostViewedBikes = await Bike.find()
       .sort({ views: -1 })
       .limit(5)
       .select('name brand views');
-    
+
     // Most compared bikes
     const mostComparedBikes = await Bike.find()
       .sort({ comparisons: -1 })
       .limit(5)
       .select('name brand comparisons');
-    
+
     // Recent bookings
     const recentBookings = await Booking.find()
       .populate('bike', 'name brand')
       .populate('user', 'name email')
       .sort({ createdAt: -1 })
       .limit(10);
-    
+
     res.json({
       totalUsers,
       totalBikes,
@@ -104,7 +170,8 @@ router.get('/stats', async (req, res) => {
       recentBookings
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Stats Error:', error); // Log full error server-side
+    res.status(500).json({ message: 'Error fetching dashboard statistics' }); // Generic client message
   }
 });
 
@@ -114,18 +181,25 @@ router.get('/stats', async (req, res) => {
 router.post('/bikes', upload.fields([
   { name: 'images', maxCount: 10 },
   { name: 'model360', maxCount: 1 }
-]), async (req, res) => {
+]), validateBike, checkValidation, async (req, res) => {
   try {
     const bikeData = { ...req.body };
-    
-    // Parse JSON fields
-    if (bikeData.specifications) {
-      bikeData.specifications = JSON.parse(bikeData.specifications);
+
+    // Parse JSON fields safely
+    try {
+      if (bikeData.specifications) {
+        // If it's already an object (body parser), great. If string, parse it.
+        bikeData.specifications = typeof bikeData.specifications === 'string'
+          ? JSON.parse(bikeData.specifications)
+          : bikeData.specifications;
+      }
+      if (bikeData.images && typeof bikeData.images === 'string') {
+        bikeData.images = JSON.parse(bikeData.images);
+      }
+    } catch (e) {
+      return res.status(400).json({ message: 'Invalid JSON format in specifications or images' });
     }
-    if (bikeData.images && typeof bikeData.images === 'string') {
-      bikeData.images = JSON.parse(bikeData.images);
-    }
-    
+
     // Add uploaded images
     if (req.files && req.files.images && req.files.images.length > 0) {
       const imageUrls = req.files.images.map(file => ({
@@ -134,16 +208,17 @@ router.post('/bikes', upload.fields([
       }));
       bikeData.images = [...(bikeData.images || []), ...imageUrls];
     }
-    
+
     // Add 3D model if uploaded
     if (req.files && req.files.model360 && req.files.model360.length > 0) {
       bikeData.model360 = `/uploads/${req.files.model360[0].filename}`;
     }
-    
+
     const bike = await Bike.create(bikeData);
     res.status(201).json(bike);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Create Bike Error:', error);
+    res.status(500).json({ message: 'Error creating bike' });
   }
 });
 
@@ -153,46 +228,53 @@ router.post('/bikes', upload.fields([
 router.put('/bikes/:id', upload.fields([
   { name: 'images', maxCount: 10 },
   { name: 'model360', maxCount: 1 }
-]), async (req, res) => {
+]), validateBike, checkValidation, async (req, res) => {
   try {
     const bikeData = { ...req.body };
-    
-    // Parse JSON fields
-    if (bikeData.specifications) {
-      bikeData.specifications = JSON.parse(bikeData.specifications);
+
+    // Parse JSON fields safely
+    try {
+      if (bikeData.specifications) {
+        bikeData.specifications = typeof bikeData.specifications === 'string'
+          ? JSON.parse(bikeData.specifications)
+          : bikeData.specifications;
+      }
+    } catch (e) {
+      return res.status(400).json({ message: 'Invalid JSON in specifications' });
     }
-    
+
     // Handle images
     if (req.files && req.files.images && req.files.images.length > 0) {
       const imageUrls = req.files.images.map(file => ({
         url: `/uploads/${file.filename}`,
         alt: bikeData.name || 'Bike image'
       }));
-      
+
       // Get existing bike to merge images
       const existingBike = await Bike.findById(req.params.id);
       const existingImages = existingBike?.images || [];
       bikeData.images = [...existingImages, ...imageUrls];
     }
-    
+
     // Handle 3D model
     if (req.files && req.files.model360 && req.files.model360.length > 0) {
       bikeData.model360 = `/uploads/${req.files.model360[0].filename}`;
     }
-    
+
     const bike = await Bike.findByIdAndUpdate(
       req.params.id,
       bikeData,
       { new: true, runValidators: true }
     );
-    
+
     if (!bike) {
       return res.status(404).json({ message: 'Bike not found' });
     }
-    
+
     res.json(bike);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Update Bike Error:', error);
+    res.status(500).json({ message: 'Error updating bike' });
   }
 });
 
@@ -204,28 +286,29 @@ router.get('/dealers', async (req, res) => {
     const dealers = await Dealer.find().sort({ createdAt: -1 });
     res.json(dealers);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Get Dealers Error:', error);
+    res.status(500).json({ message: 'Error fetching dealers' });
   }
 });
 
 // @route   POST /api/admin/dealers
 // @desc    Create dealer and user account
 // @access  Private/Admin
-router.post('/dealers', async (req, res) => {
+router.post('/dealers', validateDealer, checkValidation, async (req, res) => {
   try {
     const { email, phone, name, ...dealerData } = req.body;
-    
+
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'User with this email already exists' });
     }
-    
+
     // Generate temporary password
     const temporaryPassword = crypto.randomBytes(8).toString('hex').toUpperCase();
     const passwordExpiry = new Date();
     passwordExpiry.setDate(passwordExpiry.getDate() + 3); // 3 days from now
-    
+
     // Create dealer
     const dealer = await Dealer.create({
       ...dealerData,
@@ -233,7 +316,7 @@ router.post('/dealers', async (req, res) => {
       phone,
       name
     });
-    
+
     // Create user account for dealer
     const user = await User.create({
       name: dealer.name,
@@ -246,7 +329,7 @@ router.post('/dealers', async (req, res) => {
       temporaryPassword: temporaryPassword,
       temporaryPasswordExpiry: passwordExpiry
     });
-    
+
     // Send welcome email with temporary password
     const emailSent = await sendDealerWelcomeEmail(
       email,
@@ -254,11 +337,11 @@ router.post('/dealers', async (req, res) => {
       temporaryPassword,
       dealer.name
     );
-    
+
     if (!emailSent) {
       console.warn(`⚠️ Failed to send email to ${email}, but dealer account created`);
     }
-    
+
     res.status(201).json({
       dealer,
       user: {
@@ -269,8 +352,8 @@ router.post('/dealers', async (req, res) => {
       message: 'Dealer created successfully. Welcome email sent with temporary password.'
     });
   } catch (error) {
-    console.error('Error creating dealer:', error);
-    res.status(500).json({ message: error.message });
+    console.error('Create Dealer Error:', error);
+    res.status(500).json({ message: 'Error creating dealer' });
   }
 });
 
@@ -282,7 +365,8 @@ router.delete('/dealers/:id', async (req, res) => {
     await Dealer.findByIdAndDelete(req.params.id);
     res.json({ message: 'Dealer deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Delete Dealer Error:', error);
+    res.status(500).json({ message: 'Error deleting dealer' });
   }
 });
 
@@ -294,48 +378,51 @@ router.get('/promotions', async (req, res) => {
     const promotions = await Promotion.find({ isActive: true }).sort({ priority: -1, createdAt: -1 });
     res.json(promotions);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Get Promotions Error:', error);
+    res.status(500).json({ message: 'Error fetching promotions' });
   }
 });
 
 // @route   POST /api/admin/promotions
 // @desc    Create promotion
 // @access  Private/Admin
-router.post('/promotions', upload.single('image'), async (req, res) => {
+router.post('/promotions', upload.single('image'), validatePromotion, checkValidation, async (req, res) => {
   try {
     const promotionData = { ...req.body };
-    
+
     if (req.file) {
       promotionData.image = `/uploads/${req.file.filename}`;
     }
-    
+
     const promotion = await Promotion.create(promotionData);
     res.status(201).json(promotion);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Create Promotion Error:', error);
+    res.status(500).json({ message: 'Error creating promotion' });
   }
 });
 
 // @route   PUT /api/admin/promotions/:id
 // @desc    Update promotion
 // @access  Private/Admin
-router.put('/promotions/:id', upload.single('image'), async (req, res) => {
+router.put('/promotions/:id', upload.single('image'), validatePromotion, checkValidation, async (req, res) => {
   try {
     const promotionData = { ...req.body };
-    
+
     if (req.file) {
       promotionData.image = `/uploads/${req.file.filename}`;
     }
-    
+
     const promotion = await Promotion.findByIdAndUpdate(
       req.params.id,
       promotionData,
       { new: true }
     );
-    
+
     res.json(promotion);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Update Promotion Error:', error);
+    res.status(500).json({ message: 'Error updating promotion' });
   }
 });
 
@@ -347,7 +434,8 @@ router.delete('/promotions/:id', async (req, res) => {
     await Promotion.findByIdAndDelete(req.params.id);
     res.json({ message: 'Promotion deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Delete Promotion Error:', error);
+    res.status(500).json({ message: 'Error deleting promotion' });
   }
 });
 
