@@ -12,7 +12,6 @@ import {
   FaMotorcycle,
   FaBicycle,
   FaFire,
-  FaRupeeSign,
   FaChevronRight,
   FaArrowDown,
 } from "react-icons/fa";
@@ -31,11 +30,10 @@ const FeaturedBikeSection = ({ bike, index }) => {
   return (
     <motion.section
       ref={sectionRef}
-      className={`min-h-screen flex items-center justify-center relative overflow-hidden ${
-        index % 2 === 0
-          ? "bg-gradient-to-br from-white via-gray-50 to-white"
-          : "bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 text-white"
-      }`}
+      className={`min-h-screen flex items-center justify-center relative overflow-hidden ${index % 2 === 0
+        ? "bg-gradient-to-br from-white via-gray-50 to-white"
+        : "bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 text-white"
+        }`}
     >
       {/* Animated Background Pattern */}
       <div className="absolute inset-0 opacity-5">
@@ -80,9 +78,8 @@ const FeaturedBikeSection = ({ bike, index }) => {
           initial={{ opacity: 0, x: index % 2 === 0 ? 100 : -100 }}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className={`${
-            index % 2 === 0 ? "lg:order-2" : "lg:order-1"
-          } space-y-6`}
+          className={`${index % 2 === 0 ? "lg:order-2" : "lg:order-1"
+            } space-y-6`}
         >
           <motion.h2
             whileHover={{ scale: 1.02 }}
@@ -98,7 +95,7 @@ const FeaturedBikeSection = ({ bike, index }) => {
               whileHover={{ scale: 1.1 }}
               className="text-3xl md:text-4xl font-bold text-primary-600 dark:text-accent-400"
             >
-              ₹{bike.price.toLocaleString()}
+              रु{bike.price.toLocaleString()}
             </motion.span>
             <span className="text-gray-500 dark:text-gray-400">onwards</span>
           </div>
@@ -195,10 +192,10 @@ const Home = () => {
   ];
   const budgetRanges = [
     { label: "All", value: "all" },
-    { label: "Under ₹1 Lakh", value: "0-100000" },
-    { label: "₹1-2 Lakh", value: "100000-200000" },
-    { label: "₹2-5 Lakh", value: "200000-500000" },
-    { label: "Above ₹5 Lakh", value: "500000-999999999" },
+    { label: "Under रु1 Lakh", value: "0-100000" },
+    { label: "रु1-2 Lakh", value: "100000-200000" },
+    { label: "रु2-5 Lakh", value: "200000-500000" },
+    { label: "Above रु5 Lakh", value: "500000-999999999" },
   ];
 
   const filteredBikes =
@@ -423,7 +420,7 @@ const Home = () => {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-2xl font-bold text-primary-600">
-                            ₹{bike.price.toLocaleString()}
+                            रु{bike.price.toLocaleString()}
                           </p>
                           <span className="text-sm text-gray-500">onwards</span>
                         </div>
@@ -543,7 +540,7 @@ const Home = () => {
                       </h3>
                       <p className="text-sm text-gray-400 mb-2">{bike.brand}</p>
                       <p className="text-xl font-bold text-primary-400">
-                        ₹{bike.price.toLocaleString()}
+                        रु{bike.price.toLocaleString()}
                       </p>
                     </Link>
                   </motion.div>
@@ -637,7 +634,7 @@ const Home = () => {
                         {bike.brand} • {bike.category}
                       </p>
                       <p className="text-2xl font-bold text-primary-600">
-                        Expected: ₹{bike.price.toLocaleString()}
+                        Expected: रु{bike.price.toLocaleString()}
                       </p>
                     </Link>
                   </motion.div>
@@ -691,11 +688,10 @@ const Home = () => {
                 whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-6 py-3 font-bold text-sm transition-all capitalize rounded-full ${
-                  selectedCategory === cat
-                    ? "bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-lg"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                className={`px-6 py-3 font-bold text-sm transition-all capitalize rounded-full ${selectedCategory === cat
+                  ? "bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-lg"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
               >
                 {cat === "all" ? "All" : cat}
               </motion.button>
@@ -736,7 +732,7 @@ const Home = () => {
                     </h3>
                     <p className="text-sm text-gray-600 mb-2">{bike.brand}</p>
                     <p className="text-xl font-bold text-primary-600">
-                      ₹{bike.price.toLocaleString()}
+                      रु{bike.price.toLocaleString()}
                     </p>
                   </Link>
                 </motion.div>
@@ -807,7 +803,7 @@ const Home = () => {
                           {bike.name}
                         </h4>
                         <p className="text-primary-400 font-bold text-sm">
-                          ₹{bike.price.toLocaleString()}
+                          रु{bike.price.toLocaleString()}
                         </p>
                       </motion.div>
                       <div className="px-4">
@@ -841,7 +837,7 @@ const Home = () => {
                           {nextBike.name}
                         </h4>
                         <p className="text-primary-400 font-bold text-sm">
-                          ₹{nextBike.price.toLocaleString()}
+                          रु{nextBike.price.toLocaleString()}
                         </p>
                       </motion.div>
                     </div>
