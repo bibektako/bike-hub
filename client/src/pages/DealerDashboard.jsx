@@ -22,7 +22,6 @@ import {
   FaCheck,
   FaTimes,
   FaTag,
-  FaRupeeSign,
   FaEye,
   FaShoppingCart,
   FaSearch,
@@ -54,7 +53,7 @@ const DealerDashboard = () => {
     stock: '',
     notes: ''
   });
-  
+
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
@@ -79,7 +78,7 @@ const DealerDashboard = () => {
         ...(searchQuery && { search: searchQuery }),
         ...(selectedBrand && { brand: selectedBrand })
       });
-      
+
       const { data } = await axios.get(`/api/dealers/bikes?${params.toString()}`);
       setBikes(data.bikes || []);
       setPagination(data.pagination || pagination);
@@ -98,7 +97,7 @@ const DealerDashboard = () => {
       const timeoutId = setTimeout(() => {
         fetchBikes(1); // Reset to page 1 on search/filter change
       }, 500); // 500ms debounce
-      
+
       return () => clearTimeout(timeoutId);
     }
   }, [searchQuery, selectedBrand, sortBy, activeTab]);
@@ -300,33 +299,30 @@ const DealerDashboard = () => {
       <div className="flex space-x-4 mb-6 border-b">
         <button
           onClick={() => setActiveTab('listings')}
-          className={`px-4 py-2 font-semibold border-b-2 transition-colors ${
-            activeTab === 'listings'
-              ? 'border-primary-600 text-primary-600'
-              : 'border-transparent text-gray-600 hover:text-primary-600'
-          }`}
+          className={`px-4 py-2 font-semibold border-b-2 transition-colors ${activeTab === 'listings'
+            ? 'border-primary-600 text-primary-600'
+            : 'border-transparent text-gray-600 hover:text-primary-600'
+            }`}
         >
           <FaMotorcycle className="inline mr-2" />
           My Listings
         </button>
         <button
           onClick={() => setActiveTab('bikes')}
-          className={`px-4 py-2 font-semibold border-b-2 transition-colors ${
-            activeTab === 'bikes'
-              ? 'border-primary-600 text-primary-600'
-              : 'border-transparent text-gray-600 hover:text-primary-600'
-          }`}
+          className={`px-4 py-2 font-semibold border-b-2 transition-colors ${activeTab === 'bikes'
+            ? 'border-primary-600 text-primary-600'
+            : 'border-transparent text-gray-600 hover:text-primary-600'
+            }`}
         >
           <FaPlus className="inline mr-2" />
           List New Bike
         </button>
         <button
           onClick={() => setActiveTab('bookings')}
-          className={`px-4 py-2 font-semibold border-b-2 transition-colors ${
-            activeTab === 'bookings'
-              ? 'border-primary-600 text-primary-600'
-              : 'border-transparent text-gray-600 hover:text-primary-600'
-          }`}
+          className={`px-4 py-2 font-semibold border-b-2 transition-colors ${activeTab === 'bookings'
+            ? 'border-primary-600 text-primary-600'
+            : 'border-transparent text-gray-600 hover:text-primary-600'
+            }`}
         >
           <FaCalendarAlt className="inline mr-2" />
           Bookings
@@ -369,7 +365,7 @@ const DealerDashboard = () => {
                     <p className="text-gray-600 mb-2">{listing.bike?.brand}</p>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-primary-600 font-bold">
-                        ₹{listing.onRoadPrice?.toLocaleString() || listing.bike?.price?.toLocaleString()}
+                        रु{listing.onRoadPrice?.toLocaleString() || listing.bike?.price?.toLocaleString()}
                       </span>
                       <span className="text-sm text-gray-500">Stock: {listing.stock || 0}</span>
                     </div>
@@ -524,32 +520,32 @@ const DealerDashboard = () => {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 {bikes.map((bike) => (
-                <motion.div
-                  key={bike._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-lg shadow-md overflow-hidden"
-                >
-                  {bike.images?.[0] && (
-                    <img
-                      src={`http://localhost:5001${bike.images[0].url}`}
-                      alt={bike.name}
-                      className="w-full h-48 object-cover"
-                    />
-                  )}
-                  <div className="p-4">
-                    <h3 className="font-bold text-lg mb-2">{bike.name}</h3>
-                    <p className="text-gray-600 mb-2">{bike.brand} • {bike.category}</p>
-                    <p className="text-primary-600 font-bold mb-4">₹{bike.price?.toLocaleString()}</p>
-                    <button
-                      onClick={() => handleListBike(bike)}
-                      className="w-full bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700 flex items-center justify-center space-x-2"
-                    >
-                      <FaPlus />
-                      <span>List This Bike</span>
-                    </button>
-                  </div>
-                </motion.div>
+                  <motion.div
+                    key={bike._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white rounded-lg shadow-md overflow-hidden"
+                  >
+                    {bike.images?.[0] && (
+                      <img
+                        src={`http://localhost:5001${bike.images[0].url}`}
+                        alt={bike.name}
+                        className="w-full h-48 object-cover"
+                      />
+                    )}
+                    <div className="p-4">
+                      <h3 className="font-bold text-lg mb-2">{bike.name}</h3>
+                      <p className="text-gray-600 mb-2">{bike.brand} • {bike.category}</p>
+                      <p className="text-primary-600 font-bold mb-4">रु{bike.price?.toLocaleString()}</p>
+                      <button
+                        onClick={() => handleListBike(bike)}
+                        className="w-full bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700 flex items-center justify-center space-x-2"
+                      >
+                        <FaPlus />
+                        <span>List This Bike</span>
+                      </button>
+                    </div>
+                  </motion.div>
                 ))}
               </div>
 
@@ -557,7 +553,7 @@ const DealerDashboard = () => {
               {pagination.totalPages > 1 && (
                 <div className="flex items-center justify-between bg-white rounded-lg shadow-md p-4 mt-6">
                   <div className="text-sm text-gray-600">
-                    Page {pagination.currentPage} of {pagination.totalPages} 
+                    Page {pagination.currentPage} of {pagination.totalPages}
                     ({pagination.totalItems} total bikes)
                   </div>
                   <div className="flex items-center gap-2">
@@ -566,16 +562,15 @@ const DealerDashboard = () => {
                       whileTap={{ scale: 0.95 }}
                       onClick={() => fetchBikes(pagination.currentPage - 1)}
                       disabled={!pagination.hasPrevPage}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                        pagination.hasPrevPage
-                          ? 'bg-primary-600 text-white hover:bg-primary-700'
-                          : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      }`}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${pagination.hasPrevPage
+                        ? 'bg-primary-600 text-white hover:bg-primary-700'
+                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        }`}
                     >
                       <FaChevronLeft />
                       <span>Previous</span>
                     </motion.button>
-                    
+
                     {/* Page Numbers */}
                     <div className="flex items-center gap-1">
                       {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
@@ -589,18 +584,17 @@ const DealerDashboard = () => {
                         } else {
                           pageNum = pagination.currentPage - 2 + i;
                         }
-                        
+
                         return (
                           <motion.button
                             key={pageNum}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={() => fetchBikes(pageNum)}
-                            className={`w-10 h-10 rounded-lg font-medium transition-all ${
-                              pageNum === pagination.currentPage
-                                ? 'bg-primary-600 text-white'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
+                            className={`w-10 h-10 rounded-lg font-medium transition-all ${pageNum === pagination.currentPage
+                              ? 'bg-primary-600 text-white'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                              }`}
                           >
                             {pageNum}
                           </motion.button>
@@ -613,11 +607,10 @@ const DealerDashboard = () => {
                       whileTap={{ scale: 0.95 }}
                       onClick={() => fetchBikes(pagination.currentPage + 1)}
                       disabled={!pagination.hasNextPage}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                        pagination.hasNextPage
-                          ? 'bg-primary-600 text-white hover:bg-primary-700'
-                          : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      }`}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${pagination.hasNextPage
+                        ? 'bg-primary-600 text-white hover:bg-primary-700'
+                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        }`}
                     >
                       <span>Next</span>
                       <FaChevronRight />
@@ -632,120 +625,120 @@ const DealerDashboard = () => {
 
       {activeTab === 'bookings' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Bookings */}
-        <div>
-          <div className="flex items-center space-x-2 mb-4">
-            <FaCalendarAlt className="text-xl text-primary-600" />
-            <h2 className="text-xl font-bold">Test Ride Bookings</h2>
-          </div>
-          <div className="space-y-4">
-            {bookings.length === 0 ? (
-              <p className="text-gray-600">No bookings yet</p>
-            ) : (
-              bookings.map((booking) => (
-                <div
-                  key={booking._id}
-                  className="bg-white p-4 rounded-lg shadow-md"
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="font-bold">{booking.bike?.name}</h3>
-                      <p className="text-sm text-gray-600 flex items-center space-x-1">
-                        <FaEnvelope className="text-xs" />
-                        <span>{booking.user?.name} • {booking.user?.email}</span>
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {new Date(booking.bookingDate).toLocaleDateString()} at {booking.preferredTime}
-                      </p>
+          {/* Bookings */}
+          <div>
+            <div className="flex items-center space-x-2 mb-4">
+              <FaCalendarAlt className="text-xl text-primary-600" />
+              <h2 className="text-xl font-bold">Test Ride Bookings</h2>
+            </div>
+            <div className="space-y-4">
+              {bookings.length === 0 ? (
+                <p className="text-gray-600">No bookings yet</p>
+              ) : (
+                bookings.map((booking) => (
+                  <div
+                    key={booking._id}
+                    className="bg-white p-4 rounded-lg shadow-md"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h3 className="font-bold">{booking.bike?.name}</h3>
+                        <p className="text-sm text-gray-600 flex items-center space-x-1">
+                          <FaEnvelope className="text-xs" />
+                          <span>{booking.user?.name} • {booking.user?.email}</span>
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {new Date(booking.bookingDate).toLocaleDateString()} at {booking.preferredTime}
+                        </p>
+                      </div>
+                      <span
+                        className={`px-2 py-1 rounded text-xs ${getStatusColor(booking.status)}`}
+                      >
+                        {booking.status}
+                      </span>
                     </div>
-                    <span
-                      className={`px-2 py-1 rounded text-xs ${getStatusColor(booking.status)}`}
-                    >
-                      {booking.status}
-                    </span>
+                    {booking.message && (
+                      <p className="text-sm text-gray-600 mb-2">{booking.message}</p>
+                    )}
+                    {booking.status === 'pending' && (
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          onClick={() => {
+                            setSelectedBooking(booking);
+                            setAction('approve');
+                          }}
+                          className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 flex items-center space-x-1"
+                        >
+                          <FaCheckCircle />
+                          <span>Approve</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedBooking(booking);
+                            setAction('reject');
+                          }}
+                          className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 flex items-center space-x-1"
+                        >
+                          <FaTimesCircle />
+                          <span>Reject</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedBooking(booking);
+                            setAction('reschedule');
+                          }}
+                          className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 flex items-center space-x-1"
+                        >
+                          <FaClock />
+                          <span>Reschedule</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  {booking.message && (
-                    <p className="text-sm text-gray-600 mb-2">{booking.message}</p>
-                  )}
-                  {booking.status === 'pending' && (
-                    <div className="flex gap-2 mt-2">
-                      <button
-                        onClick={() => {
-                          setSelectedBooking(booking);
-                          setAction('approve');
-                        }}
-                        className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 flex items-center space-x-1"
-                      >
-                        <FaCheckCircle />
-                        <span>Approve</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedBooking(booking);
-                          setAction('reject');
-                        }}
-                        className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 flex items-center space-x-1"
-                      >
-                        <FaTimesCircle />
-                        <span>Reject</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedBooking(booking);
-                          setAction('reschedule');
-                        }}
-                        className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 flex items-center space-x-1"
-                      >
-                        <FaClock />
-                        <span>Reschedule</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Inquiries */}
-        <div>
-          <div className="flex items-center space-x-2 mb-4">
-            <FaComments className="text-xl text-primary-600" />
-            <h2 className="text-xl font-bold">Customer Inquiries</h2>
+          {/* Inquiries */}
+          <div>
+            <div className="flex items-center space-x-2 mb-4">
+              <FaComments className="text-xl text-primary-600" />
+              <h2 className="text-xl font-bold">Customer Inquiries</h2>
+            </div>
+            <div className="space-y-4">
+              {inquiries.length === 0 ? (
+                <p className="text-gray-600">No inquiries yet</p>
+              ) : (
+                inquiries.map((inquiry) => (
+                  <div
+                    key={inquiry._id}
+                    className="bg-white p-4 rounded-lg shadow-md"
+                  >
+                    <h3 className="font-bold">{inquiry.subject}</h3>
+                    <p className="text-sm text-gray-600 mb-2">
+                      From: {inquiry.user?.name} • Bike: {inquiry.bike?.name}
+                    </p>
+                    <p className="text-sm mb-2">{inquiry.message}</p>
+                    {inquiry.dealerReply ? (
+                      <div className="bg-gray-50 p-2 rounded text-sm">
+                        <p className="font-semibold">Your Reply:</p>
+                        <p>{inquiry.dealerReply.message}</p>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleInquiryReply(inquiry._id)}
+                        className="bg-primary-600 text-white px-3 py-1 rounded text-sm hover:bg-primary-700 flex items-center space-x-1"
+                      >
+                        <FaReply />
+                        <span>Reply</span>
+                      </button>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
-          <div className="space-y-4">
-            {inquiries.length === 0 ? (
-              <p className="text-gray-600">No inquiries yet</p>
-            ) : (
-              inquiries.map((inquiry) => (
-                <div
-                  key={inquiry._id}
-                  className="bg-white p-4 rounded-lg shadow-md"
-                >
-                  <h3 className="font-bold">{inquiry.subject}</h3>
-                  <p className="text-sm text-gray-600 mb-2">
-                    From: {inquiry.user?.name} • Bike: {inquiry.bike?.name}
-                  </p>
-                  <p className="text-sm mb-2">{inquiry.message}</p>
-                  {inquiry.dealerReply ? (
-                    <div className="bg-gray-50 p-2 rounded text-sm">
-                      <p className="font-semibold">Your Reply:</p>
-                      <p>{inquiry.dealerReply.message}</p>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => handleInquiryReply(inquiry._id)}
-                      className="bg-primary-600 text-white px-3 py-1 rounded text-sm hover:bg-primary-700 flex items-center space-x-1"
-                    >
-                      <FaReply />
-                      <span>Reply</span>
-                    </button>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
         </div>
       )}
 
@@ -867,7 +860,7 @@ const DealerDashboard = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    On-Road Price (₹)
+                    On-Road Price (रु)
                   </label>
                   <input
                     type="number"

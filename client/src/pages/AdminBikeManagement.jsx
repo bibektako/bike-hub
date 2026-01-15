@@ -13,7 +13,6 @@ import {
   FaTimes,
   FaCheck,
   FaTag,
-  FaRupeeSign,
   FaImage,
   FaCube,
   FaUpload,
@@ -134,9 +133,9 @@ const AdminBikeManagement = () => {
       toast.error('Maximum 10 images allowed');
       return;
     }
-    
+
     setSelectedImages(files);
-    
+
     // Create previews
     const previews = files.map(file => URL.createObjectURL(file));
     setImagePreviews(previews);
@@ -147,7 +146,7 @@ const AdminBikeManagement = () => {
     if (imagePreviews[index] && imagePreviews[index].startsWith('blob:')) {
       URL.revokeObjectURL(imagePreviews[index]);
     }
-    
+
     const newImages = selectedImages.filter((_, i) => i !== index);
     const newPreviews = imagePreviews.filter((_, i) => i !== index);
     setSelectedImages(newImages);
@@ -159,17 +158,17 @@ const AdminBikeManagement = () => {
     if (file) {
       const validExtensions = ['.glb', '.gltf'];
       const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
-      
+
       if (!validExtensions.includes(fileExtension)) {
         toast.error('Please upload a GLB or GLTF file');
         return;
       }
-      
+
       if (file.size > 50 * 1024 * 1024) { // 50MB limit
         toast.error('3D model file size should be less than 50MB');
         return;
       }
-      
+
       setModel3DFile(file);
       setModel3DPreview(file.name);
     }
@@ -177,16 +176,16 @@ const AdminBikeManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validate required fields
     if (!formData.name || !formData.brand || !formData.category || !formData.price || !formData.exShowroomPrice || !formData.description) {
       toast.error('Please fill all required fields in Step 1');
       setCurrentStep(1);
       return;
     }
-    
+
     const formDataToSend = new FormData();
-    
+
     // Append form fields
     Object.keys(formData).forEach(key => {
       if (key === 'specifications') {
@@ -512,55 +511,55 @@ const AdminBikeManagement = () => {
                       />
                     </div>
                   </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2 flex items-center space-x-2">
-                  <FaTag className="text-primary-600" />
-                  <span>Category</span>
-                </label>
-                <select
-                  required
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md"
-                >
-                  <option value="">Select Category</option>
-                  <option value="Sports">Sports</option>
-                  <option value="Cruiser">Cruiser</option>
-                  <option value="Touring">Touring</option>
-                  <option value="Adventure">Adventure</option>
-                  <option value="Naked">Naked</option>
-                  <option value="Scooter">Scooter</option>
-                  <option value="Electric">Electric</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2 flex items-center space-x-2">
-                  <FaRupeeSign className="text-primary-600" />
-                  <span>Price</span>
-                </label>
-                <input
-                  type="number"
-                  required
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2 flex items-center space-x-2">
-                <FaRupeeSign className="text-primary-600" />
-                <span>Ex-Showroom Price</span>
-              </label>
-              <input
-                type="number"
-                required
-                value={formData.exShowroomPrice}
-                onChange={(e) => setFormData({ ...formData, exShowroomPrice: e.target.value })}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2 flex items-center space-x-2">
+                        <FaTag className="text-primary-600" />
+                        <span>Category</span>
+                      </label>
+                      <select
+                        required
+                        value={formData.category}
+                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md"
+                      >
+                        <option value="">Select Category</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Cruiser">Cruiser</option>
+                        <option value="Touring">Touring</option>
+                        <option value="Adventure">Adventure</option>
+                        <option value="Naked">Naked</option>
+                        <option value="Scooter">Scooter</option>
+                        <option value="Electric">Electric</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2 flex items-center space-x-2">
+                        <span className="text-primary-600 font-bold">रु</span>
+                        <span>Price</span>
+                      </label>
+                      <input
+                        type="number"
+                        required
+                        value={formData.price}
+                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2 flex items-center space-x-2">
+                      <span className="text-primary-600 font-bold">रु</span>
+                      <span>Ex-Showroom Price</span>
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      value={formData.exShowroomPrice}
+                      onChange={(e) => setFormData({ ...formData, exShowroomPrice: e.target.value })}
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md"
+                    />
+                  </div>
                   <div>
                     <label className="block text-sm font-medium mb-2 flex items-center space-x-2">
                       <FaImage className="text-primary-600" />
@@ -577,109 +576,109 @@ const AdminBikeManagement = () => {
                   </div>
 
                   {/* Image Upload Section */}
-            <div>
-              <label className="block text-sm font-medium mb-2 flex items-center space-x-2">
-                <FaImage className="text-primary-600" />
-                <span>Bike Images (Max 10 images)</span>
-              </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageChange}
-                  className="hidden"
-                  id="image-upload"
-                />
-                <label
-                  htmlFor="image-upload"
-                  className="flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors"
-                >
-                  <FaUpload className="text-3xl text-gray-400 mb-2" />
-                  <span className="text-sm text-gray-600 font-medium">
-                    Click to upload images or drag and drop
-                  </span>
-                  <span className="text-xs text-gray-500 mt-1">
-                    PNG, JPG, WEBP up to 10MB each
-                  </span>
-                </label>
-                
-                {/* Image Previews */}
-                {imagePreviews.length > 0 && (
-                  <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {imagePreviews.map((preview, index) => (
-                      <div key={index} className="relative group">
-                        <img
-                          src={preview}
-                          alt={`Preview ${index + 1}`}
-                          className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <FaTimes className="text-xs" />
-                        </button>
-                        <div className="absolute bottom-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
-                          {selectedImages[index]?.name || 'Existing'}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2 flex items-center space-x-2">
+                      <FaImage className="text-primary-600" />
+                      <span>Bike Images (Max 10 images)</span>
+                    </label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageChange}
+                        className="hidden"
+                        id="image-upload"
+                      />
+                      <label
+                        htmlFor="image-upload"
+                        className="flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors"
+                      >
+                        <FaUpload className="text-3xl text-gray-400 mb-2" />
+                        <span className="text-sm text-gray-600 font-medium">
+                          Click to upload images or drag and drop
+                        </span>
+                        <span className="text-xs text-gray-500 mt-1">
+                          PNG, JPG, WEBP up to 10MB each
+                        </span>
+                      </label>
 
-            {/* 3D Model Upload Section */}
-            <div>
-              <label className="block text-sm font-medium mb-2 flex items-center space-x-2">
-                <FaCube className="text-primary-600" />
-                <span>3D Model (Optional - for 360° view)</span>
-              </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                <input
-                  type="file"
-                  accept=".glb,.gltf"
-                  onChange={handle3DModelChange}
-                  className="hidden"
-                  id="model3d-upload"
-                />
-                <label
-                  htmlFor="model3d-upload"
-                  className="flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors"
-                >
-                  <FaCube className="text-3xl text-gray-400 mb-2" />
-                  <span className="text-sm text-gray-600 font-medium">
-                    Click to upload 3D model
-                  </span>
-                  <span className="text-xs text-gray-500 mt-1">
-                    GLB or GLTF format (max 50MB)
-                  </span>
-                </label>
-                
-                {model3DPreview && (
-                  <div className="mt-4 flex items-center justify-between bg-gray-50 p-3 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <FaCube className="text-primary-600" />
-                      <span className="text-sm font-medium text-gray-700">
-                        {model3DPreview}
-                      </span>
+                      {/* Image Previews */}
+                      {imagePreviews.length > 0 && (
+                        <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {imagePreviews.map((preview, index) => (
+                            <div key={index} className="relative group">
+                              <img
+                                src={preview}
+                                alt={`Preview ${index + 1}`}
+                                className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => removeImage(index)}
+                                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <FaTimes className="text-xs" />
+                              </button>
+                              <div className="absolute bottom-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                                {selectedImages[index]?.name || 'Existing'}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setModel3DFile(null);
-                        setModel3DPreview(null);
-                      }}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <FaTrashAlt />
-                    </button>
                   </div>
-                )}
-              </div>
-            </div>
+
+                  {/* 3D Model Upload Section */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 flex items-center space-x-2">
+                      <FaCube className="text-primary-600" />
+                      <span>3D Model (Optional - for 360° view)</span>
+                    </label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                      <input
+                        type="file"
+                        accept=".glb,.gltf"
+                        onChange={handle3DModelChange}
+                        className="hidden"
+                        id="model3d-upload"
+                      />
+                      <label
+                        htmlFor="model3d-upload"
+                        className="flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors"
+                      >
+                        <FaCube className="text-3xl text-gray-400 mb-2" />
+                        <span className="text-sm text-gray-600 font-medium">
+                          Click to upload 3D model
+                        </span>
+                        <span className="text-xs text-gray-500 mt-1">
+                          GLB or GLTF format (max 50MB)
+                        </span>
+                      </label>
+
+                      {model3DPreview && (
+                        <div className="mt-4 flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                          <div className="flex items-center space-x-2">
+                            <FaCube className="text-primary-600" />
+                            <span className="text-sm font-medium text-gray-700">
+                              {model3DPreview}
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setModel3DFile(null);
+                              setModel3DPreview(null);
+                            }}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <FaTrashAlt />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
 
                   <div>
                     <label className="flex items-center space-x-2">
@@ -1191,7 +1190,7 @@ const AdminBikeManagement = () => {
                 </td>
                 <td className="px-4 py-3">{bike.brand}</td>
                 <td className="px-4 py-3">{bike.category}</td>
-                <td className="px-4 py-3">₹{bike.price.toLocaleString()}</td>
+                <td className="px-4 py-3">रु{bike.price.toLocaleString()}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
                     <button
