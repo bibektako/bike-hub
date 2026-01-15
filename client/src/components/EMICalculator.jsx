@@ -33,17 +33,17 @@ const EMICalculator = ({ price }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h3 className="text-xl font-bold mb-4">EMI Calculator</h3>
-      
+
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-2">
-            Bike Price: ₹{price.toLocaleString()}
+            Bike Price: रु{price.toLocaleString()}
           </label>
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium mb-2">
-            Down Payment: ₹{Math.round(downPayment).toLocaleString()}
+            Down Payment: रु{Math.round(downPayment).toLocaleString()}
           </label>
           <input
             type="range"
@@ -59,13 +59,13 @@ const EMICalculator = ({ price }) => {
             className="w-full"
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium mb-2">
-            Loan Amount: ₹{Math.round(loanAmount).toLocaleString()}
+            Loan Amount: रु{Math.round(loanAmount).toLocaleString()}
           </label>
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium mb-2">
             Interest Rate: {interestRate}% per annum
@@ -80,7 +80,7 @@ const EMICalculator = ({ price }) => {
             className="w-full"
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium mb-2">
             Loan Tenure: {tenure} months ({Math.round(tenure / 12)} years)
@@ -95,21 +95,21 @@ const EMICalculator = ({ price }) => {
             className="w-full"
           />
         </div>
-        
+
         <div className="bg-primary-50 p-4 rounded-lg mt-4">
           <div className="text-center">
             <p className="text-sm text-gray-600">Monthly EMI</p>
             <p className="text-3xl font-bold text-primary-600">
-              ₹{Math.round(emi).toLocaleString()}
+              रु{Math.round(emi).toLocaleString()}
             </p>
             <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
               <div>
                 <p className="text-gray-600">Total Amount</p>
-                <p className="font-semibold">₹{Math.round(totalAmount).toLocaleString()}</p>
+                <p className="font-semibold">रु{Math.round(totalAmount).toLocaleString()}</p>
               </div>
               <div>
                 <p className="text-gray-600">Total Interest</p>
-                <p className="font-semibold">₹{Math.round(totalInterest).toLocaleString()}</p>
+                <p className="font-semibold">रु{Math.round(totalInterest).toLocaleString()}</p>
               </div>
             </div>
           </div>

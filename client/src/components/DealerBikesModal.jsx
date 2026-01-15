@@ -13,7 +13,6 @@ import {
   FaEnvelope,
   FaCalendarCheck,
   FaShoppingCart,
-  FaRupeeSign,
   FaSpinner
 } from 'react-icons/fa';
 
@@ -124,13 +123,13 @@ const DealerBikesModal = ({ isOpen, onClose, dealer }) => {
                       <p className="text-sm text-gray-600 mb-2">
                         {item.bike.brand} • {item.bike.category}
                       </p>
-                      
+
                       <div className="space-y-2 mb-3">
                         {item.onRoadPrice && (
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-600">On-Road Price:</span>
                             <span className="font-bold text-primary-600 flex items-center space-x-1">
-                              <FaRupeeSign />
+                              <span className="font-bold">रु</span>
                               <span>{item.onRoadPrice.toLocaleString()}</span>
                             </span>
                           </div>

@@ -46,13 +46,13 @@ const SearchAutocomplete = () => {
     }
 
     const lowerQuery = searchQuery.toLowerCase().trim();
-    
+
     // Search in bike name, brand, and category
     const matches = allBikes.filter(bike => {
       const nameMatch = bike.name?.toLowerCase().includes(lowerQuery);
       const brandMatch = bike.brand?.toLowerCase().includes(lowerQuery);
       const categoryMatch = bike.category?.toLowerCase().includes(lowerQuery);
-      
+
       return nameMatch || brandMatch || categoryMatch;
     });
 
@@ -71,12 +71,12 @@ const SearchAutocomplete = () => {
       const bBrandExact = b.brand?.toLowerCase() === lowerQuery;
       if (aBrandExact && !bBrandExact) return -1;
       if (!aBrandExact && bBrandExact) return 1;
-      
+
       const aNameStarts = a.name?.toLowerCase().startsWith(lowerQuery);
       const bNameStarts = b.name?.toLowerCase().startsWith(lowerQuery);
       if (aNameStarts && !bNameStarts) return -1;
       if (!aNameStarts && bNameStarts) return 1;
-      
+
       return 0;
     });
 
@@ -194,7 +194,7 @@ const SearchAutocomplete = () => {
                         <span className="text-xs text-gray-500">{bike.category}</span>
                         <span className="text-gray-300">•</span>
                         <span className="text-xs font-semibold text-primary-600">
-                          ₹{bike.price.toLocaleString()}
+                          रु{bike.price.toLocaleString()}
                         </span>
                       </div>
                     </div>
