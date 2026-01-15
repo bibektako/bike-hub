@@ -9,10 +9,10 @@ import BikeView360 from '../components/BikeView360';
 import EMICalculator from '../components/EMICalculator';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TestRideBookingModal from '../components/TestRideBookingModal';
-import { 
-  FaEye, 
-  FaBalanceScale, 
-  FaCalendarCheck, 
+import {
+  FaEye,
+  FaBalanceScale,
+  FaCalendarCheck,
   FaCalculator,
   FaCog,
   FaTachometerAlt,
@@ -92,25 +92,25 @@ const BikeDetail = () => {
       bikeName: bike.name,
       currentCompareList: compareList
     });
-    
+
     const updatedList = [...compareList];
-    
+
     // Limit to 4 bikes for comparison
     if (updatedList.length >= 4) {
       toast.error('Maximum 4 bikes can be compared at once');
       console.warn('⚠️ [BikeDetail] Compare list limit reached (4 bikes)');
       return;
     }
-    
+
     if (!updatedList.find(b => b._id === bike._id)) {
       updatedList.push({ _id: bike._id, name: bike.name, brand: bike.brand });
       localStorage.setItem('compareList', JSON.stringify(updatedList));
       setCompareList(updatedList);
       console.log('✅ [BikeDetail] Bike added to comparison:', updatedList);
       toast.success('Added to comparison');
-      
+
       // Track comparison
-      axios.post(`/api/bikes/${id}/compare`).catch(() => {});
+      axios.post(`/api/bikes/${id}/compare`).catch(() => { });
     } else {
       console.log('⚠️ [BikeDetail] Bike already in comparison list');
       toast.error('Bike already in comparison');
@@ -179,11 +179,11 @@ const BikeDetail = () => {
                 firstImage: bike.images?.[0]?.url,
                 allImages: bike.images
               });
-              
+
               if (!hasImages) {
                 console.log('⚠️ [BikeDetail] No images available, showing placeholder');
               }
-              
+
               return (
                 <>
                   {hasImages ? (
@@ -290,10 +290,10 @@ const BikeDetail = () => {
                   whileHover={{ scale: 1.05 }}
                   className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent"
                 >
-                  ₹{bike.price.toLocaleString()}
+                  रु{bike.price.toLocaleString()}
                 </motion.p>
                 <p className="text-sm text-gray-600 font-medium">
-                  Ex-showroom: ₹{bike.exShowroomPrice.toLocaleString()}
+                  Ex-showroom: रु{bike.exShowroomPrice.toLocaleString()}
                 </p>
               </div>
               <p className="text-gray-700 leading-relaxed mb-6 font-medium">
@@ -335,172 +335,172 @@ const BikeDetail = () => {
           </motion.div>
         </div>
 
-      {/* 360° View */}
-      {show360 && (() => {
-        console.log('🔄 [BikeDetail] Rendering 360° view');
-        return (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="mt-8 bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 shadow-2xl border-2 border-primary-500/20"
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold flex items-center space-x-2 bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">
-                <FaEye className="text-primary-600" />
-                <span>360° Interactive View</span>
-              </h2>
-              <motion.button
-                whileHover={{ scale: 1.1, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setShow360(false)}
-                className="text-gray-500 hover:text-primary-600 transition-colors"
-              >
-                <FaTimes className="text-xl" />
-              </motion.button>
-            </div>
-            <BikeView360 bike={bike} />
-          </motion.div>
-        );
-      })()}
+        {/* 360° View */}
+        {show360 && (() => {
+          console.log('🔄 [BikeDetail] Rendering 360° view');
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="mt-8 bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 shadow-2xl border-2 border-primary-500/20"
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold flex items-center space-x-2 bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">
+                  <FaEye className="text-primary-600" />
+                  <span>360° Interactive View</span>
+                </h2>
+                <motion.button
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setShow360(false)}
+                  className="text-gray-500 hover:text-primary-600 transition-colors"
+                >
+                  <FaTimes className="text-xl" />
+                </motion.button>
+              </div>
+              <BikeView360 bike={bike} />
+            </motion.div>
+          );
+        })()}
 
-      {/* Animated Specifications */}
-      {(() => {
-        console.log('⚙️ [BikeDetail] Rendering specifications:', {
-          hasSpecifications: !!bike.specifications,
-          hasEngine: !!bike.specifications?.engine,
-          hasPerformance: !!bike.specifications?.performance,
-          hasDimensions: !!bike.specifications?.dimensions,
-          hasBrakes: !!bike.specifications?.brakes,
-          specificationsObject: bike.specifications
-        });
-        return (
-          <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="mt-8 bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-2xl border-2 border-primary-500/20"
-      >
-        <h2 className="text-3xl md:text-4xl font-bold mb-6 flex items-center space-x-2 bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">
-          <motion.div
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          >
-            <FaCog className="text-primary-600" />
-          </motion.div>
-          <span>Specifications</span>
-        </h2>
-        {bike.specifications ? (
-          <motion.div
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
-            {bike.specifications.engine && (
-              <motion.div
-                variants={scaleIn}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="bg-gradient-to-br from-primary-50 to-accent-50 rounded-xl p-6 border-2 border-primary-200 shadow-lg"
-              >
-                <h3 className="font-bold text-xl mb-4 flex items-center space-x-2 text-gray-800">
+        {/* Animated Specifications */}
+        {(() => {
+          console.log('⚙️ [BikeDetail] Rendering specifications:', {
+            hasSpecifications: !!bike.specifications,
+            hasEngine: !!bike.specifications?.engine,
+            hasPerformance: !!bike.specifications?.performance,
+            hasDimensions: !!bike.specifications?.dimensions,
+            hasBrakes: !!bike.specifications?.brakes,
+            specificationsObject: bike.specifications
+          });
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="mt-8 bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-2xl border-2 border-primary-500/20"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 flex items-center space-x-2 bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                >
                   <FaCog className="text-primary-600" />
-                  <span>Engine</span>
-                </h3>
-                <ul className="space-y-2 text-gray-700">
-                  {Object.entries(bike.specifications.engine).map(([key, value]) => (
-                    <li key={key} className="flex justify-between border-b border-gray-200 pb-2">
-                      <span className="capitalize font-medium">{key.replace(/([A-Z])/g, ' $1')}:</span>
-                      <span className="text-gray-600">{value}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            )}
-            {bike.specifications.performance && (
-              <motion.div
-                variants={scaleIn}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="bg-gradient-to-br from-accent-50 to-primary-50 rounded-xl p-6 border-2 border-accent-200 shadow-lg"
-              >
-                <h3 className="font-bold text-xl mb-4 flex items-center space-x-2 text-gray-800">
-                  <FaTachometerAlt className="text-accent-600" />
-                  <span>Performance</span>
-                </h3>
-                <ul className="space-y-2 text-gray-700">
-                  {Object.entries(bike.specifications.performance).map(([key, value]) => (
-                    <motion.li
-                      key={key}
-                      whileHover={{ x: 5 }}
-                      className="flex justify-between border-b border-accent-200 pb-2"
+                </motion.div>
+                <span>Specifications</span>
+              </h2>
+              {bike.specifications ? (
+                <motion.div
+                  variants={staggerContainer}
+                  initial="initial"
+                  whileInView="animate"
+                  viewport={{ once: true }}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                >
+                  {bike.specifications.engine && (
+                    <motion.div
+                      variants={scaleIn}
+                      whileHover={{ y: -5, scale: 1.02 }}
+                      className="bg-gradient-to-br from-primary-50 to-accent-50 rounded-xl p-6 border-2 border-primary-200 shadow-lg"
                     >
-                      <span className="capitalize font-semibold">{key.replace(/([A-Z])/g, ' $1')}:</span>
-                      <span className="text-gray-700 font-medium">{value}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.div>
-            )}
-            {bike.specifications.dimensions && (
-              <motion.div
-                variants={scaleIn}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="bg-gradient-to-br from-primary-50 to-accent-50 rounded-xl p-6 border-2 border-primary-200 shadow-lg"
-              >
-                <h3 className="font-bold text-xl mb-4 flex items-center space-x-2 text-gray-800">
-                  <FaRuler className="text-primary-600" />
-                  <span>Dimensions</span>
-                </h3>
-                <ul className="space-y-2 text-gray-700">
-                  {Object.entries(bike.specifications.dimensions).map(([key, value]) => (
-                    <motion.li
-                      key={key}
-                      whileHover={{ x: 5 }}
-                      className="flex justify-between border-b border-primary-200 pb-2"
+                      <h3 className="font-bold text-xl mb-4 flex items-center space-x-2 text-gray-800">
+                        <FaCog className="text-primary-600" />
+                        <span>Engine</span>
+                      </h3>
+                      <ul className="space-y-2 text-gray-700">
+                        {Object.entries(bike.specifications.engine).map(([key, value]) => (
+                          <li key={key} className="flex justify-between border-b border-gray-200 pb-2">
+                            <span className="capitalize font-medium">{key.replace(/([A-Z])/g, ' $1')}:</span>
+                            <span className="text-gray-600">{value}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                  {bike.specifications.performance && (
+                    <motion.div
+                      variants={scaleIn}
+                      whileHover={{ y: -5, scale: 1.02 }}
+                      className="bg-gradient-to-br from-accent-50 to-primary-50 rounded-xl p-6 border-2 border-accent-200 shadow-lg"
                     >
-                      <span className="capitalize font-semibold">{key.replace(/([A-Z])/g, ' $1')}:</span>
-                      <span className="text-gray-700 font-medium">{value}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.div>
-            )}
-            {bike.specifications.brakes && (
-              <motion.div
-                variants={scaleIn}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border-2 border-gray-300 shadow-lg"
-              >
-                <h3 className="font-bold text-xl mb-4 flex items-center space-x-2 text-gray-800">
-                  <FaStopCircle className="text-primary-600" />
-                  <span>Brakes</span>
-                </h3>
-                <ul className="space-y-2 text-gray-700">
-                  {Object.entries(bike.specifications.brakes).map(([key, value]) => (
-                    <motion.li
-                      key={key}
-                      whileHover={{ x: 5 }}
-                      className="flex justify-between border-b border-gray-300 pb-2"
+                      <h3 className="font-bold text-xl mb-4 flex items-center space-x-2 text-gray-800">
+                        <FaTachometerAlt className="text-accent-600" />
+                        <span>Performance</span>
+                      </h3>
+                      <ul className="space-y-2 text-gray-700">
+                        {Object.entries(bike.specifications.performance).map(([key, value]) => (
+                          <motion.li
+                            key={key}
+                            whileHover={{ x: 5 }}
+                            className="flex justify-between border-b border-accent-200 pb-2"
+                          >
+                            <span className="capitalize font-semibold">{key.replace(/([A-Z])/g, ' $1')}:</span>
+                            <span className="text-gray-700 font-medium">{value}</span>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                  {bike.specifications.dimensions && (
+                    <motion.div
+                      variants={scaleIn}
+                      whileHover={{ y: -5, scale: 1.02 }}
+                      className="bg-gradient-to-br from-primary-50 to-accent-50 rounded-xl p-6 border-2 border-primary-200 shadow-lg"
                     >
-                      <span className="capitalize font-semibold">{key.replace(/([A-Z])/g, ' $1')}:</span>
-                      <span className="text-gray-700 font-medium">{String(value)}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.div>
-            )}
-          </motion.div>
-        ) : (
-          <div className="text-center py-12">
-            <FaCog className="text-5xl text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 font-medium">Specifications not available</p>
-          </div>
-        )}
-      </motion.div>
-        );
-      })()}
+                      <h3 className="font-bold text-xl mb-4 flex items-center space-x-2 text-gray-800">
+                        <FaRuler className="text-primary-600" />
+                        <span>Dimensions</span>
+                      </h3>
+                      <ul className="space-y-2 text-gray-700">
+                        {Object.entries(bike.specifications.dimensions).map(([key, value]) => (
+                          <motion.li
+                            key={key}
+                            whileHover={{ x: 5 }}
+                            className="flex justify-between border-b border-primary-200 pb-2"
+                          >
+                            <span className="capitalize font-semibold">{key.replace(/([A-Z])/g, ' $1')}:</span>
+                            <span className="text-gray-700 font-medium">{value}</span>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                  {bike.specifications.brakes && (
+                    <motion.div
+                      variants={scaleIn}
+                      whileHover={{ y: -5, scale: 1.02 }}
+                      className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border-2 border-gray-300 shadow-lg"
+                    >
+                      <h3 className="font-bold text-xl mb-4 flex items-center space-x-2 text-gray-800">
+                        <FaStopCircle className="text-primary-600" />
+                        <span>Brakes</span>
+                      </h3>
+                      <ul className="space-y-2 text-gray-700">
+                        {Object.entries(bike.specifications.brakes).map(([key, value]) => (
+                          <motion.li
+                            key={key}
+                            whileHover={{ x: 5 }}
+                            className="flex justify-between border-b border-gray-300 pb-2"
+                          >
+                            <span className="capitalize font-semibold">{key.replace(/([A-Z])/g, ' $1')}:</span>
+                            <span className="text-gray-700 font-medium">{String(value)}</span>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                </motion.div>
+              ) : (
+                <div className="text-center py-12">
+                  <FaCog className="text-5xl text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500 font-medium">Specifications not available</p>
+                </div>
+              )}
+            </motion.div>
+          );
+        })()}
       </div>
 
       {/* Test Ride Booking Modal */}

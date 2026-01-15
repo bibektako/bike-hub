@@ -9,7 +9,6 @@ import {
   FaTimes,
   FaMotorcycle,
   FaBicycle,
-  FaRupeeSign,
   FaTag
 } from 'react-icons/fa';
 import { fadeInUp, scaleIn, staggerContainer } from '../utils/animations';
@@ -29,7 +28,7 @@ const BikeComparison = () => {
 
   const fetchBikes = async (ids) => {
     console.log('🔍 [BikeComparison] Fetching bikes, IDs:', ids);
-    
+
     if (ids.length === 0) {
       console.log('⚠️ [BikeComparison] No bikes in compare list');
       setLoading(false);
@@ -46,34 +45,34 @@ const BikeComparison = () => {
           return null; // Return null for failed requests
         });
       });
-      
+
       const responses = await Promise.all(bikePromises);
-      
+
       // Filter out null responses (failed requests)
       const successfulResponses = responses.filter(res => res !== null);
       const failedCount = responses.length - successfulResponses.length;
-      
+
       if (failedCount > 0) {
         console.warn(`⚠️ [BikeComparison] ${failedCount} bike(s) failed to load`);
         toast.error(`${failedCount} bike(s) failed to load`);
       }
-      
+
       if (successfulResponses.length === 0) {
         console.error('❌ [BikeComparison] No bikes loaded successfully');
         toast.error('Failed to load any bikes for comparison');
         setBikes([]);
         return;
       }
-      
+
       console.log('✅ [BikeComparison] Bikes fetched successfully:', successfulResponses.map(r => ({
         id: r.data._id,
         name: r.data.name
       })));
-      
+
       const fetchedBikes = successfulResponses.map(res => res.data);
       setBikes(fetchedBikes);
       console.log('🎉 [BikeComparison] Bikes state updated:', fetchedBikes.length, 'bikes');
-      
+
       // Update localStorage to remove failed bike IDs
       if (failedCount > 0) {
         const validIds = fetchedBikes.map(b => ({ _id: b._id, name: b.name, brand: b.brand }));
@@ -187,51 +186,51 @@ const BikeComparison = () => {
                 {bikes.map((bike, index) => {
                   console.log(`🚲 [BikeComparison] Rendering bike ${index + 1}:`, bike.name, bike._id);
                   return (
-                  <motion.th
-                    key={bike._id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3 + index * 0.1 }}
-                    className="px-6 py-4 text-left relative"
-                  >
-                    <motion.button
-                      whileHover={{ scale: 1.2, rotate: 90 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => removeFromCompare(bike._id)}
-                      className="absolute top-2 right-2 text-white hover:text-red-300 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                    <motion.th
+                      key={bike._id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.3 + index * 0.1 }}
+                      className="px-6 py-4 text-left relative"
                     >
-                      <FaTimes />
-                    </motion.button>
-                    <Link to={`/bikes/${bike._id}`} className="block">
-                      {bike.images && bike.images.length > 0 && (
-                        <motion.img
-                          src={`http://localhost:5001${bike.images[0].url}`}
-                          alt={bike.name}
-                          className="w-32 h-32 object-contain mx-auto mb-3 rounded-xl bg-white/20 p-2"
-                          whileHover={{ scale: 1.1, rotate: 5 }}
-                        />
-                      )}
-                      <div className="font-bold flex items-center justify-center space-x-1 text-white">
-                        <FaMotorcycle />
-                        <span>{bike.name}</span>
-                      </div>
-                      <div className="text-sm text-white/80 flex items-center justify-center space-x-1 mt-1">
-                        <FaTag />
-                        <span>{bike.brand}</span>
-                      </div>
-                      <div className="text-white font-bold flex items-center justify-center space-x-1 mt-2">
-                        <FaRupeeSign />
-                        <span>{bike.price.toLocaleString()}</span>
-                      </div>
-                    </Link>
-                  </motion.th>
+                      <motion.button
+                        whileHover={{ scale: 1.2, rotate: 90 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => removeFromCompare(bike._id)}
+                        className="absolute top-2 right-2 text-white hover:text-red-300 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                      >
+                        <FaTimes />
+                      </motion.button>
+                      <Link to={`/bikes/${bike._id}`} className="block">
+                        {bike.images && bike.images.length > 0 && (
+                          <motion.img
+                            src={`http://localhost:5001${bike.images[0].url}`}
+                            alt={bike.name}
+                            className="w-32 h-32 object-contain mx-auto mb-3 rounded-xl bg-white/20 p-2"
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                          />
+                        )}
+                        <div className="font-bold flex items-center justify-center space-x-1 text-white">
+                          <FaMotorcycle />
+                          <span>{bike.name}</span>
+                        </div>
+                        <div className="text-sm text-white/80 flex items-center justify-center space-x-1 mt-1">
+                          <FaTag />
+                          <span>{bike.brand}</span>
+                        </div>
+                        <div className="text-white font-bold flex items-center justify-center space-x-1 mt-2">
+                          <span>रु</span>
+                          <span>{bike.price.toLocaleString()}</span>
+                        </div>
+                      </Link>
+                    </motion.th>
                   );
                 })}
               </tr>
             </thead>
             <tbody>
               {[
-                { label: 'Price', value: (bike) => `₹${bike.price.toLocaleString()}` },
+                { label: 'Price', value: (bike) => `रु${bike.price.toLocaleString()}` },
                 { label: 'Category', value: (bike) => bike.category },
               ].map((row, rowIndex) => (
                 <motion.tr
@@ -252,9 +251,9 @@ const BikeComparison = () => {
               {specs.map((spec, specIndex) => {
                 // Check if any bike has this specification
                 const hasSpec = bikes.some(bike => bike.specifications?.[spec]);
-                
+
                 if (!hasSpec) return null;
-                
+
                 return (
                   <motion.tr
                     key={spec}
