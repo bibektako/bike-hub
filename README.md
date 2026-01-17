@@ -263,6 +263,14 @@ bike_hub/
 
 This is an academic project. For questions or issues, please refer to the project documentation.
 
+## Security Features
+
+- **Helmet**: Secures HTTP headers.
+- **XSS Protection**: Sanitizes user input to prevent Cross-Site Scripting.
+- **NoSQL Injection Prevention**: Sanitizes data to prevent MongoDB operator injection.
+- **CSRF Protection**: Custom middleware verifies Origin/Referer for state-changing requests.
+- **Rate Limiting**: Protects against brute-force and DoS attacks.
+
 ## 📄 License
 
 This project is for academic purposes.
