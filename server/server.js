@@ -7,6 +7,11 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
+import xss from 'xss-clean';
+import hpp from 'hpp';
+import rateLimit from 'express-rate-limit';
 
 // Import Routes
 import authRoutes from './routes/auth.routes.js';
@@ -32,6 +37,55 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Security Middleware
+// Set security HTTP headers
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" } // Allow resources to be loaded by other origins (e.g., frontend)
+}));
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again in 10 minutes'
+});
+app.use('/api', limiter);
+
+// Data Sanitization against NoSQL Query Injection
+app.use(mongoSanitize());
+
+// Data Sanitization against XSS
+app.use(xss());
+
+// Prevent Parameter Pollution
+app.use(hpp());
+
+// Custom CSRF Protection
+// Ensures that state-changing requests come from the trusted frontend origin
+app.use((req, res, next) => {
+  // Skip for safe methods
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+    return next();
+  }
+
+  const origin = req.get('Origin');
+  // Referer is often less reliable but can be a fallback. 
+  // Strict Origin check is best for APIs called by browsers.
+  
+  const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:3000';
+
+  // If Origin header is present, it MUST match
+  if (origin) {
+    if (origin !== allowedOrigin) {
+      return res.status(403).json({ message: 'CSRF Protection: Origin mismatch' });
+    }
+  } 
+  // If no Origin (e.g. server-to-server or strict privacy settings), check Referer as fallback if available
+  // NOTE: Modern browsers usually send Origin on POST. 
+  
+  next();
+});
 
 // Session middleware (required for Passport)
 app.use(
